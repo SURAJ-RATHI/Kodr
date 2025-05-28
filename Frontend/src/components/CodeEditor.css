@@ -1,0 +1,143 @@
+.code-editor-container {
+    position: relative;
+    height: 100%;
+    background-color: #1e1e1e;
+}
+
+.line-numbers {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    background-color: #1e1e1e;
+    border-right: 1px solid #333;
+    color: #858585;
+    text-align: right;
+    padding: 10px 5px;
+    user-select: none;
+    z-index: 1;
+}
+
+.line-number {
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.code-editor {
+    position: absolute;
+    top: 0;
+    left: 40px;
+    right: 0;
+    bottom: 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 10px 10px 10px 50px;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    overflow-y: auto;
+}
+
+.code-editor-pre {
+    margin: 0;
+    padding: 0;
+    background-color: transparent !important;
+}
+
+/* Syntax highlighting colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #6a9955;
+}
+
+.token.punctuation {
+    color: #ffffff;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+    color: #b5cea8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+    color: #ce9178;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #ffffff;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #569cd6;
+}
+
+.token.function {
+    color: #dcdcaa;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: #d16969;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+/* Scrollbar Styles */
+.code-editor::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.code-editor::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+.code-editor::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+.code-editor::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+/* Selection Styles */
+.code-editor textarea::selection {
+    background-color: var(--vscode-editor-selectionBackground);
+}
+
+/* Focus Styles */
+.code-editor textarea:focus {
+    outline: none;
+    box-shadow: none;
+} 

@@ -1,0 +1,382 @@
+.project {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #252526;
+    border-bottom: 1px solid #333;
+}
+
+.project-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.project-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #0e639c;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #1177bb;
+}
+
+.btn-secondary {
+    background-color: #3c3c3c;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #4c4c4c;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.drawing-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #252526;
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.drawing-tools .btn-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2d2d2d;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drawing-tools .btn-icon:hover {
+    background-color: #3c3c3c;
+}
+
+.drawing-tools .btn-icon.active {
+    background-color: #0e639c;
+    border-color: #0e639c;
+}
+
+.drawing-tools .btn-icon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.drawing-tools .color-picker {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.25rem;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+}
+
+.drawing-tools .color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.drawing-tools .color-picker::-webkit-color-swatch {
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+}
+
+.drawing-tools .line-width-slider {
+    width: 100px;
+    height: 2.5rem;
+    vertical-align: middle;
+    background: #2d2d2d;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    padding: 0 0.5rem;
+    color: #fff;
+}
+
+.drawing-tools .line-width-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #0e639c;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.drawing-tools .line-width-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: #3c3c3c;
+    border-radius: 2px;
+}
+
+.project-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.editor-and-output {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+    height: 100%;
+}
+
+/* Default state: Editor and Output side-by-side */
+.editor-and-output:not(.show-whiteboard):not(.maximized) > .editor-container {
+    flex: 1; /* Editor takes remaining space */
+    overflow: hidden;
+    position: relative;
+    border-right: 1px solid #333;
+    min-height: 0;
+    height: 100%;
+}
+
+.editor-and-output:not(.show-whiteboard):not(.maximized) > .output-panel {
+    width: 40%; /* Output has a fixed width */
+    flex-shrink: 0;
+    background-color: #1e1e1e;
+    border-left: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1rem;
+}
+
+.editor-and-output:not(.show-whiteboard):not(.maximized) > .whiteboard-container {
+    display: none; /* Hidden by default */
+}
+
+/* When whiteboard is shown (not maximized) */
+.editor-and-output.show-whiteboard:not(.maximized) > .editor-container {
+    display: block; /* Ensure editor is displayed when whiteboard is side-by-side */
+    flex: 0 0 auto; /* Flex properties controlled by inline style width */
+    border-right: 1px solid #333;
+    flex-direction: column;
+}
+
+.editor-and-output.show-whiteboard:not(.maximized) > .output-panel {
+    display: none; /* Hide output panel */
+}
+
+.editor-and-output.show-whiteboard:not(.maximized) > .whiteboard-container {
+    display: block; /* Show whiteboard */
+    flex: 0 0 auto; /* Flex properties controlled by inline style width */
+    border-left: 1px solid #333;
+}
+
+/* Maximized whiteboard styles */
+.editor-and-output.show-whiteboard.maximized > .editor-container {
+    display: none; /* Hide editor container */
+}
+
+.editor-and-output.show-whiteboard.maximized > .output-panel {
+    display: none; /* Hide output panel */
+}
+
+.editor-and-output.show-whiteboard.maximized > .whiteboard-container {
+    display: block; /* Show whiteboard */
+    flex: 1 0 100%; /* Allow whiteboard to take full width */
+    width: 100%; /* Explicit width for fallback */
+    border-left: none;
+}
+
+.editor-container {
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+    height: 100%;
+}
+
+.output-panel {
+    flex-shrink: 0;
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1rem;
+}
+
+.output-panel h3 {
+    margin: 0 0 1rem 0;
+    color: #fff;
+}
+
+.output-content {
+    flex: 1;
+    overflow: auto;
+    background-color: #252526;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    white-space: pre-wrap;
+    color: #fff;
+}
+
+.whiteboard-container {
+    flex: 1; /* Make whiteboard container fill available height */
+    overflow: hidden;
+    position: relative;
+    /* Add background color here if not handled by canvas */
+    /* background-color: #1e1e1e; */
+    width: 100%; /* Ensure it takes full width of its flex container */
+    height: 100%; /* Ensure it takes full height of its flex container */
+    /* Add other styles from the previous .whiteboard-canvas if they belong to the container */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resizer {
+    width: 8px;
+    cursor: ew-resize;
+    background-color: #333;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
+}
+
+.resizer:hover {
+    background-color: #0e639c;
+}
+
+.language-selector {
+    position: relative;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: #252526;
+    border: 1px solid #333;
+    border-radius: 4px;
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #3c3c3c;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: #252526;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+    margin: 0 0 1rem 0;
+    color: #fff;
+}
+
+.modal p {
+    margin: 0 0 1.5rem 0;
+    color: #ccc;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #f44336;
+    font-size: 1.2rem;
+}
+
+/* Scrollbar Styles */
+.output-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.output-content::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+.output-content::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+.output-content::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
