@@ -1,0 +1,53 @@
+.home-view {
+    padding: 2rem;
+
+    .projects {
+        display: flex;
+        gap: 1em;
+        flex-wrap: wrap;
+
+
+        .project {
+            padding: 1em;
+            border: 1px solid rgba(0, 0, 0, 0.427);
+            cursor: pointer;
+            border-radius: 0.5em;
+            background-color: rgb(244, 248, 255);
+        }
+
+        .new-project {
+            padding: 1em;
+            border-radius: 0.7em;
+            border: 1px solid rgba(0, 0, 0, 0.427);
+            background-color: rgb(238, 238, 238);
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+    }
+
+    .modal {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.281);
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // display: none;
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+
+            input {
+                padding: 0.7em 1.5em;
+                border-radius: 0.5em;
+                border: 1px solid black;
+                outline: none;
+            }
+        }
+    }
+}

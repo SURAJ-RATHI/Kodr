@@ -1,0 +1,234 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+    background-color: var(--vscode-editor-bg);
+    color: var(--vscode-text);
+}
+
+.home-header {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--vscode-border);
+}
+
+.home-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.welcome-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.welcome-icon {
+    color: var(--vscode-blue);
+    margin-bottom: 1.5rem;
+}
+
+.welcome-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.projects-grid {
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    background-color: var(--vscode-card-bg);
+    border: 1px solid var(--vscode-border);
+    border-radius: 5px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.project-card:hover {
+    background-color: var(--vscode-card-hover-bg);
+    border-color: var(--vscode-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.project-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--vscode-text);
+}
+
+.project-date {
+    font-size: 0.8rem;
+    color: var(--vscode-descriptionForeground);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: var(--vscode-editor-bg);
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    color: var(--vscode-text);
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--vscode-text);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--vscode-border);
+    border-radius: 3px;
+    background-color: var(--vscode-input-bg);
+    color: var(--vscode-input-foreground);
+    font-size: 1rem;
+}
+
+.form-input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--vscode-button-bg);
+    color: var(--vscode-button-foreground);
+}
+
+.btn-primary:hover {
+    background-color: var(--vscode-button-hoverBg);
+}
+
+.btn-secondary {
+    background-color: var(--vscode-button-secondaryBg);
+    color: var(--vscode-button-secondaryForeground);
+}
+
+.btn-secondary:hover {
+    background-color: var(--vscode-button-secondaryHoverBg);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error-message {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #ff6b6b;
+    padding: 1rem;
+    margin: 1rem auto;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    width: fit-content;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: var(--vscode-text);
+}
+
+.recent-projects-section {
+    margin-top: 3rem;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.recent-projects-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--vscode-text);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--vscode-border);
+    padding-bottom: 0.5rem;
+}

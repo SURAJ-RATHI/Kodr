@@ -1,0 +1,157 @@
+:root {
+  --vscode-bg: #1e1e1e;
+  --vscode-sidebar-bg: #252526;
+  --vscode-sidebar-width: 48px;
+  --vscode-text: #cccccc;
+  --vscode-active-bg: #37373d;
+  --vscode-hover-bg: #2a2d2e;
+  --vscode-border: #474747;
+  --vscode-blue: #007acc;
+  --vscode-blue-hover: #1a8ad0;
+  --vscode-editor-bg: #1e1e1e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--vscode-bg);
+  color: var(--vscode-text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--vscode-bg);
+}
+
+.navbar {
+  background-color: var(--vscode-sidebar-bg);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--vscode-border);
+  height: 48px;
+}
+
+.nav-brand h1 {
+  color: var(--vscode-blue);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: var(--vscode-text);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background-color: var(--vscode-hover-bg);
+}
+
+.main-content {
+  flex: 1;
+  background-color: var(--vscode-bg);
+  min-height: calc(100vh - 48px);
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.875rem;
+  background-color: var(--vscode-sidebar-bg);
+  color: var(--vscode-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn:hover {
+  background-color: var(--vscode-hover-bg);
+}
+
+.btn-primary {
+  background-color: var(--vscode-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--vscode-blue-hover);
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--vscode-sidebar-bg);
+  border-radius: 3px;
+  border: 1px solid var(--vscode-border);
+  padding: 1rem;
+  transition: all 0.2s;
+}
+
+.card:hover {
+  background-color: var(--vscode-hover-bg);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--vscode-text);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--vscode-bg);
+  border: 1px solid var(--vscode-border);
+  border-radius: 3px;
+  color: var(--vscode-text);
+  font-size: 0.875rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--vscode-blue);
+}
+
+/* Loading and Error States */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--vscode-text);
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+} 
