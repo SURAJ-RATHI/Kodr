@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaCode, FaHome, FaPlus, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
-    const location = useLocation();
     const [user, setUser] = useState(null);
 
     // Fetch current user when the component mounts
@@ -48,17 +47,11 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
-            <div className="nav-brand">
+            <Link to="/" className="nav-brand">
                 <FaCode className="brand-icon" />
                 <h1>Kodr</h1>
-            </div>
+            </Link>
             <div className="nav-links">
-                <Link 
-                    to="/" 
-                    className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                >
-                    <FaHome /> Home
-                </Link>
                 {/* Conditionally render Sign In or Logout */} 
                 {user ? (
                     // Logged in: Show user name/email and Logout button

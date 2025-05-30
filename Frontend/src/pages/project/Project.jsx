@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaSave, FaPlay, FaCaretDown, FaSignInAlt, FaDrawPolygon, FaEdit, FaPencilAlt, FaEraser, FaUndo, FaRedo, FaHighlighter, FaSquare, FaCircle, FaMinus, FaArrowRight, FaExpand, FaCompress, FaTrash } from 'react-icons/fa';
 import CodeEditor from '../../components/CodeEditor';
 import Whiteboard from '../../components/Whiteboard';
+import { getBoilerplateCode } from '../../utils/boilerplate';
 import "../../components/Whiteboard.css";
 import './Project.css'; // Assuming Project.css is in the same directory as Project.jsx
 
@@ -37,8 +38,8 @@ const Project = () => {
     const supportedLanguages = [
         { name: 'JavaScript', value: 'javascript', prismAlias: 'javascript' },
         { name: 'Python', value: 'python', prismAlias: 'python' },
-        { name: 'C++', value: 'cpp', prismAlias: 'cpp' },
         { name: 'Java', value: 'java', prismAlias: 'java' },
+        { name: 'C++', value: 'cpp', prismAlias: 'cpp' }
     ];
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const Project = () => {
         if (guestMode) {
             const tempProject = {
                 _id: projectId,
-                name: 'Untitled Project',
+                name: localStorage.getItem('projectName') || 'New Project',
                 content: '// Start coding here...',
                 language: 'javascript',
                 isGuest: true
@@ -131,8 +132,16 @@ const Project = () => {
     };
 
     const handleContentChange = (newContent) => {
-        if (showWhiteboard) return; // Prevent content changes in whiteboard view
         setContent(newContent);
+    };
+
+    const handleLanguageChange = async (newLanguage) => {
+        setSelectedLanguage(newLanguage);
+        setShowLanguageDropdown(false);
+        
+        // Get boilerplate code for the selected language
+        const boilerplate = getBoilerplateCode(newLanguage);
+        setContent(boilerplate);
     };
 
     // Resizing handlers
@@ -214,218 +223,210 @@ const Project = () => {
         }
     };
 
+    const handleWhiteboardToggle = () => {
+        setShowWhiteboard(!showWhiteboard);
+    };
+
+    const handleWhiteboardToolChange = (tool) => {
+        setTool(tool);
+    };
+
+    const handleWhiteboardColorChange = (color) => {
+        setColor(color);
+    };
+
+    const handleWhiteboardLineWidthChange = (width) => {
+        setLineWidth(width);
+    };
+
+    const handleWhiteboardUndo = () => {
+        if (whiteboardRef.current) {
+            whiteboardRef.current.undo();
+        }
+    };
+
+    const handleWhiteboardRedo = () => {
+        if (whiteboardRef.current) {
+            whiteboardRef.current.redo();
+        }
+    };
+
+    const handleWhiteboardClear = () => {
+        if (whiteboardRef.current) {
+            whiteboardRef.current.clear();
+        }
+    };
+
     if (loading) return <div className="loading">Loading project...</div>;
     if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div className="project">
+        <div className="project" ref={projectContainerRef}>
             <div className="project-header">
-                <h1>{project?.name}</h1>
-                <div className="project-actions">
-                    {/* Toggle Button for Whiteboard/Code View */}
-                    <button className="btn btn-secondary" onClick={handleToggleWhiteboard}>
-                        {showWhiteboard ? <><FaEdit /> Code View</> : <><FaDrawPolygon /> Whiteboard</>}
-                    </button>
-                    {showWhiteboard && (
-                        <button className="btn btn-secondary" onClick={handleToggleMaximize}>
-                            {isWhiteboardMaximized ? <><FaCompress /> Minimize</> : <><FaExpand /> Maximize</>}
+                <h1 style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    {project?.name}
+                    <div className="language-selector" style={{ marginLeft: '1rem' }}>
+                        <button 
+                            className="language-button"
+                            onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                        >
+                            {supportedLanguages.find(lang => lang.value === selectedLanguage)?.name || 'Select Language'}
+                            <FaCaretDown />
                         </button>
-                    )}
-
-                    {/* Language Dropdown (shown only in code view header) */}
-                    {!showWhiteboard && (
-                        <div className="dropdown">
-                            <button className="btn btn-secondary dropdown-toggle" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
-                                {supportedLanguages.find(lang => lang.value === selectedLanguage)?.name || 'Language'} <FaCaretDown />
-                            </button>
-                            {showLanguageDropdown && (
-                                <div className="dropdown-menu">
-                                    {supportedLanguages.map(lang => (
-                                        <button
-                                            key={lang.value}
-                                            className="dropdown-item"
-                                            onClick={() => {
-                                                setSelectedLanguage(lang.value);
-                                                setShowLanguageDropdown(false);
-                                            }}
-                                        >
-                                            {lang.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Main Content Area (Code Editor/Output or Whiteboard) */}
-            <div className="project-content" ref={projectContainerRef}>
-                <div className={`code-editor-container ${showWhiteboard && !isWhiteboardMaximized ? 'shrink' : ''}`} 
-                     style={{ flexBasis: `${editorWidth}%` }}>
-                    {/* Editor Controls (Run/Save) */}
-                    <div className="editor-controls">
-                        {!showWhiteboard && (
-                            <>
-                                <button className="btn btn-primary" onClick={handleRunCode} disabled={isRunning}>
-                                    <FaPlay /> {isRunning ? 'Running...' : 'Run'}
-                                </button>
-                                {!isGuestMode && (
-                                    <button className="btn btn-success" onClick={handleSave}>
-                                        <FaSave /> Save
+                        {showLanguageDropdown && (
+                            <div className="language-dropdown">
+                                {supportedLanguages.map(lang => (
+                                    <button
+                                        key={lang.value}
+                                        onClick={() => handleLanguageChange(lang.value)}
+                                        className={selectedLanguage === lang.value ? 'active' : ''}
+                                    >
+                                        {lang.name}
                                     </button>
-                                )}
-                            </>
+                                ))}
+                            </div>
                         )}
                     </div>
-                    {/* Code Editor */}
-                    <CodeEditor
-                        language={supportedLanguages.find(lang => lang.value === selectedLanguage)?.prismAlias || 'javascript'}
-                        value={content}
-                        onValueChange={handleContentChange}
-                    />
-                </div>
-
-                {/* Resizer handle */}
-                <div 
-                    className="resizer"
-                    onMouseDown={handleMouseDown}
-                    onTouchStart={(e) => {
-                        e.preventDefault();
-                        setIsResizing(true);
-                        document.addEventListener('touchmove', handleTouchMove);
-                        document.addEventListener('touchend', handleTouchEnd);
-                    }}
-                />
-
-                {/* Output/Whiteboard Container */}
-                <div className="output-container">
-                    {!showWhiteboard ? (
-                        // Output View
-                        <>
-                            {/* Output header and content */}
-                            <h3>Output</h3>
-                            <div className="output-content">
-                                <pre>{output}</pre>
-                            </div>
-                        </>
-                    ) : (
-                        // Whiteboard View
-                        <div className={`whiteboard-container ${isWhiteboardMaximized ? 'maximized' : ''}`}> {/* Use CSS for flex and width */}
-                            {/* Drawing tools (moved inside whiteboard container) */}
-                            <div className="drawing-tools-container">
-                                <div className="drawing-tools"> {/* Original drawing tools div */}
-                                    <button
-                                        className={`btn-icon ${tool === 'pencil' ? 'active' : ''}`}
-                                        onClick={() => setTool('pencil')}
-                                        title="Pencil">
-                                        <FaPencilAlt />
-                                    </button>
-                                    {/* Added Highlighter Tool */}
-                                    <button
-                                        className={`btn-icon ${tool === 'highlighter' ? 'active' : ''}`}
-                                        onClick={() => setTool('highlighter')}
-                                        title="Highlighter">
-                                        <FaHighlighter />
-                                    </button>
-                                    <button
-                                        className={`btn-icon ${tool === 'eraser' ? 'active' : ''}`}
-                                        onClick={() => setTool('eraser')}
-                                        title="Eraser">
-                                        <FaEraser />
-                                    </button>
-                                    {/* Added Shape Tools */}
-                                    <button
-                                        className={`btn-icon ${tool === 'rectangle' ? 'active' : ''}`}
-                                        onClick={() => setTool('rectangle')}
-                                        title="Rectangle">
-                                        <FaSquare />
-                                    </button>
-                                    <button
-                                        className={`btn-icon ${tool === 'circle' ? 'active' : ''}`}
-                                        onClick={() => setTool('circle')}
-                                        title="Circle">
-                                        <FaCircle />
-                                    </button>
-                                    {/* Added Line and Arrow Tools */}
-                                    <button
-                                        className={`btn-icon ${tool === 'line' ? 'active' : ''}`}
-                                        onClick={() => setTool('line')}
-                                        title="Line">
-                                        <FaMinus />
-                                    </button>
-                                    <button
-                                        className={`btn-icon ${tool === 'arrow' ? 'active' : ''}`}
-                                        onClick={() => setTool('arrow')}
-                                        title="Arrow">
-                                        <FaArrowRight />
-                                    </button>
-
-                                    {/* Color Picker */}
-                                    <input
-                                        type="color"
-                                        value={color}
-                                        onChange={(e) => setColor(e.target.value)}
-                                        disabled={tool === 'eraser'}
-                                        title="Color Picker"
-                                        className="color-picker"
-                                        aria-label="Choose color"
-                                    />
-
-                                    {/* Line Width Slider */}
-                                    <input
-                                        type="range"
-                                        min="1"
-                                        max="20"
-                                        value={lineWidth}
-                                        onChange={(e) => setLineWidth(Number(e.target.value))}
-                                        title="Line Width"
-                                        className="line-width-slider"
-                                        aria-label="Select line width"
-                                    />
-
-                                    {/* Undo/Redo/Clear for Whiteboard */}
-                                    <button
-                                        className="btn-icon"
-                                        onClick={() => whiteboardRef.current?.undo()}
-                                        disabled={!canUndo}
-                                        title="Undo"
-                                        aria-label="Undo drawing"
-                                    >
-                                        <FaUndo />
-                                    </button>
-                                    <button
-                                        className="btn-icon"
-                                        onClick={() => whiteboardRef.current?.redo()}
-                                        disabled={!canRedo}
-                                        title="Redo"
-                                        aria-label="Redo drawing"
-                                    >
-                                        <FaRedo />
-                                    </button>
-                                    <button
-                                        className="btn-icon"
-                                        onClick={handleClearWhiteboard}
-                                        title="Clear Whiteboard"
-                                        aria-label="Clear whiteboard"
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Whiteboard Canvas */}
-                            <Whiteboard
-                                ref={whiteboardRef}
-                                tool={tool}
-                                color={color}
-                                lineWidth={lineWidth}
-                                setCanUndo={setCanUndo}
-                                setCanRedo={setCanRedo}
-                            />
-                        </div>
+                    <button className="action-button" onClick={handleRunCode} disabled={isRunning} style={{ marginLeft: '1rem' }}>
+                        <FaPlay /> {isRunning ? 'Running...' : 'Run'}
+                    </button>
+                </h1>
+                <div className="project-actions">
+                    {!isGuestMode && (
+                        <button className="action-button" onClick={handleSave}>
+                            <FaSave /> Save
+                        </button>
                     )}
+                    <button className="action-button" onClick={handleToggleWhiteboard}>
+                        <FaDrawPolygon /> {showWhiteboard ? 'Code' : 'Whiteboard'}
+                    </button>
                 </div>
+            </div>
+            <div className="project-content" style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
+                {!showWhiteboard && (
+                    <div className="editor-container" style={{ flex: `${editorWidth}%` }}>
+                        <CodeEditor
+                            value={content}
+                            language={selectedLanguage}
+                            onValueChange={handleContentChange}
+                            hideLanguageSelector={true}
+                        />
+                    </div>
+                )}
+                {showWhiteboard && (
+                    <div className="whiteboard-section" style={{ flex: `${100 - editorWidth}%` }}>
+                        <div className="whiteboard-tools">
+                            <button
+                                className={`tool-btn ${tool === 'pencil' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('pencil')}
+                                title="Pencil"
+                            >
+                                <FaPencilAlt />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'eraser' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('eraser')}
+                                title="Eraser"
+                            >
+                                <FaEraser />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'highlighter' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('highlighter')}
+                                title="Highlighter"
+                            >
+                                <FaHighlighter />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'rectangle' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('rectangle')}
+                                title="Rectangle"
+                            >
+                                <FaSquare />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'circle' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('circle')}
+                                title="Circle"
+                            >
+                                <FaCircle />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'line' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('line')}
+                                title="Line"
+                            >
+                                <FaArrowRight />
+                            </button>
+                            <button
+                                className={`tool-btn ${tool === 'arrow' ? 'active' : ''}`}
+                                onClick={() => handleWhiteboardToolChange('arrow')}
+                                title="Arrow"
+                            >
+                                <FaArrowRight />
+                            </button>
+                            <input
+                                type="color"
+                                value={color}
+                                onChange={(e) => handleWhiteboardColorChange(e.target.value)}
+                                title="Color"
+                            />
+                            <input
+                                type="range"
+                                min="1"
+                                max="20"
+                                value={lineWidth}
+                                onChange={(e) => handleWhiteboardLineWidthChange(parseInt(e.target.value))}
+                                title="Line Width"
+                            />
+                            <button
+                                className="tool-btn"
+                                onClick={handleWhiteboardUndo}
+                                disabled={!canUndo}
+                                title="Undo"
+                            >
+                                <FaUndo />
+                            </button>
+                            <button
+                                className="tool-btn"
+                                onClick={handleWhiteboardRedo}
+                                disabled={!canRedo}
+                                title="Redo"
+                            >
+                                <FaRedo />
+                            </button>
+                            <button
+                                className="tool-btn"
+                                onClick={handleWhiteboardClear}
+                                title="Clear"
+                            >
+                                <FaTrash />
+                            </button>
+                        </div>
+                        <Whiteboard
+                            ref={whiteboardRef}
+                            tool={tool}
+                            color={color}
+                            lineWidth={lineWidth}
+                            setCanUndo={setCanUndo}
+                            setCanRedo={setCanRedo}
+                        />
+                    </div>
+                )}
+                {!showWhiteboard && (
+                    <div className="resizer" onMouseDown={handleMouseDown} onTouchStart={handleMouseDown} />
+                )}
+                {!showWhiteboard && (
+                    <div className="output-container" style={{ flex: `${100 - editorWidth}%` }}>
+                        <div className="output-header">
+                            <h3>Output</h3>
+                            <button className="clear-button" onClick={() => setOutput('')}>
+                                Clear
+                            </button>
+                        </div>
+                        <pre className="output-content">{output || 'No output yet'}</pre>
+                    </div>
+                )}
             </div>
         </div>
     );

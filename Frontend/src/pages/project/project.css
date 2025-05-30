@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow: hidden;
     background-color: #1e1e1e;
     color: #fff;
 }
@@ -11,522 +10,246 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 16px 24px;
     background-color: #252526;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .project-header h1 {
     margin: 0;
     font-size: 1.5rem;
+    font-weight: 600;
     color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .project-actions {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 12px;
 }
 
-.btn {
+.action-button {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #0e639c;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    color: #fff;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.btn-primary {
-    background-color: #0e639c;
-    color: #fff;
-}
-
-.btn-primary:hover {
+.action-button:hover {
     background-color: #1177bb;
+    transform: translateY(-1px);
 }
 
-.btn-secondary {
-    background-color: #3c3c3c;
-    color: #fff;
-}
-
-.btn-secondary:hover {
-    background-color: #4c4c4c;
-}
-
-.btn:disabled {
+.action-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
-.drawing-tools {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    background-color: #252526;
-    border-radius: 4px;
-    border: 1px solid #333;
-}
-
-.drawing-tools .btn-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #2d2d2d;
-    border: 1px solid #3c3c3c;
-    border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.drawing-tools .btn-icon:hover {
-    background-color: #3c3c3c;
-}
-
-.drawing-tools .btn-icon.active {
-    background-color: #0e639c;
-    border-color: #0e639c;
-}
-
-.drawing-tools .btn-icon:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.drawing-tools .color-picker {
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0.25rem;
-    border: 1px solid #3c3c3c;
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-}
-
-.drawing-tools .color-picker::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-.drawing-tools .color-picker::-webkit-color-swatch {
-    border: 1px solid #3c3c3c;
-    border-radius: 4px;
-}
-
-.drawing-tools .line-width-slider {
-    width: 100px;
-    height: 2.5rem;
-    vertical-align: middle;
-    background: #2d2d2d;
-    border: 1px solid #3c3c3c;
-    border-radius: 4px;
-    padding: 0 0.5rem;
-    color: #fff;
-}
-
-.drawing-tools .line-width-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
+.action-button svg {
     width: 16px;
     height: 16px;
-    background: #0e639c;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.drawing-tools .line-width-slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    background: #3c3c3c;
-    border-radius: 2px;
-}
-
-.project-content {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    height: calc(100vh - 60px); /* Adjust based on your header height */
-}
-
-.editor-and-output {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-}
-
-/* Editor container styles */
-.editor-container {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-    background-color: #1e1e1e;
-}
-
-/* Output panel styles */
-.output-panel {
-    display: flex;
-    flex-direction: column;
-    background-color: #1e1e1e;
-    border-left: 1px solid #333;
-    height: 100%;
-    overflow: hidden;
-}
-
-.output-panel h3 {
-    margin: 0;
-    padding: 12px;
-    background-color: #252526;
-    color: #fff;
-    font-size: 14px;
-    border-bottom: 1px solid #333;
-}
-
-.output-content {
-    flex: 1;
-    overflow: auto;
-    padding: 12px;
-}
-
-.output-content pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    color: #d4d4d4;
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* Whiteboard container styles */
-.whiteboard-container {
-    display: flex;
-    flex-direction: column;
-    background-color: #1e1e1e;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    border-left: 1px solid #333;
-}
-
-/* Resizer styles */
-.resizer {
-    position: relative; /* Change to relative position */
-    width: 8px; /* Make the interactive area wider */
-    background-color: #333; /* Default visual */
-    cursor: col-resize;
-    z-index: 100;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0; /* Prevent shrinking */
-}
-
-.resizer:hover,
-.resizer:active {
-    background-color: #0e639c; /* Highlight on hover/active */
-    /* No need to change width on hover if base width is sufficient */
-}
-
-/* Whiteboard maximized state */
-.editor-and-output.maximized .editor-container,
-.editor-and-output.maximized .resizer {
-    display: none;
-}
-
-.editor-and-output.maximized .whiteboard-container {
-    width: 100% !important;
-    border-left: none;
-}
-
-/* Whiteboard show state */
-.editor-and-output.show-whiteboard:not(.maximized) .output-panel {
-    display: none;
-}
-
-/* Ensure canvas fills container */
-.whiteboard-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-    background-color: #1e1e1e;
-}
-
-/* Drawing tools styles */
-.drawing-tools {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 100;
-    display: flex;
-    gap: 8px;
-    background-color: #252526;
-    padding: 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.drawing-tools button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.drawing-tools button:hover {
-    background-color: #0e639c;
-}
-
-.drawing-tools button.active {
-    background-color: #0e639c;
-}
-
-.drawing-tools .color-picker {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 1px solid #333;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.drawing-tools .line-width-slider {
-    width: 100px;
-    height: 32px;
-    margin: 0;
-    vertical-align: middle;
 }
 
 .language-selector {
     position: relative;
 }
 
+.language-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.language-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
 .language-dropdown {
     position: absolute;
     top: 100%;
-    right: 0;
-    margin-top: 0.5rem;
-    background-color: #252526;
-    border: 1px solid #333;
-    border-radius: 4px;
-    min-width: 150px;
-    z-index: 1000;
-}
-
-.dropdown-item {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.dropdown-item:hover {
-    background-color: #3c3c3c;
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal {
+    margin-top: 8px;
     background-color: #252526;
-    border-radius: 8px;
-    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    min-width: 150px;
+}
+
+.language-dropdown button {
+    display: block;
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.modal h2 {
-    margin: 0 0 1rem 0;
+    padding: 8px 16px;
+    background: none;
+    border: none;
     color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.modal p {
-    margin: 0 0 1.5rem 0;
-    color: #ccc;
+.language-dropdown button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.modal-actions {
+.language-dropdown button.active {
+    background-color: #0e639c;
+}
+
+.project-content {
     display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #fff;
-    font-size: 1.2rem;
-}
-
-.error-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #f44336;
-    font-size: 1.2rem;
-}
-
-/* Scrollbar Styles */
-.output-content::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.output-content::-webkit-scrollbar-track {
-    background: var(--vscode-scrollbarSlider-background);
-}
-
-.output-content::-webkit-scrollbar-thumb {
-    background: var(--vscode-scrollbarSlider-hoverBackground);
-    border-radius: 4px;
-}
-
-.output-content::-webkit-scrollbar-thumb:hover {
-    background: var(--vscode-scrollbarSlider-activeBackground);
-}
-
-/* Main container layout */
-.project-container {
-    display: flex;
-    height: calc(100vh - 60px); /* Adjust based on your header height */
+    flex: 1;
     overflow: hidden;
+    position: relative;
 }
 
-/* Code editor container */
-.code-editor-container {
-    flex: 0 0 50%; /* Initial flex-basis for width */
-    min-width: 300px;
-    max-width: 80%;
-    height: 100%; /* Ensure it takes full height of parent flex item */
-    position: relative;
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Hide horizontal overflow */
-    display: flex;
-    flex-direction: column; /* Stack controls and editor vertically */
-    /* Removed border-right as resizer acts as separator */
-}
-
-/* Output/Whiteboard container */
-.output-container {
-    flex: 1; /* Grow to fill remaining space */
-    height: 100%; /* Ensure it takes full height of parent flex item */
-    position: relative;
-    overflow: auto; /* Enable scrolling for output/whiteboard content */
+.editor-container {
+    height: 100%;
     background-color: #1e1e1e;
-    min-width: 300px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.output-container {
+    height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: #1e1e1e;
 }
 
-/* Resizer handle */
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #252526;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.output-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.clear-button {
+    padding: 4px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.output-content {
+    flex: 1;
+    padding: 16px;
+    margin: 0;
+    overflow-y: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #d4d4d4;
+    background-color: #1e1e1e;
+}
+
 .resizer {
-    flex-shrink: 0;
-    width: 8px;
-    background-color: #333;
+    width: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
     cursor: col-resize;
-    z-index: 100;
     transition: background-color 0.2s;
 }
 
 .resizer:hover,
 .resizer:active {
     background-color: #0e639c;
+    width: 6px;
 }
 
-/* Code editor preformatted text */
-.code-editor-pre {
-    margin: 0;
-    padding: 0;
-    background-color: transparent !important;
-    white-space: pre-wrap; /* Ensure long lines wrap */
-    word-break: break-word; /* Break long words if necessary */
-    overflow-x: hidden; /* Ensure no horizontal overflow within the pre */
-}
-
-/* Scrollbar styling for code editor */
-.code-editor-container::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.code-editor-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-.code-editor-container::-webkit-scrollbar-thumb {
-    background: #424242;
-    border-radius: 4px;
-}
-
-.code-editor-container::-webkit-scrollbar-thumb:hover {
-    background: #4f4f4f;
-}
-
-/* Adjustments for the actual react-simple-code-editor Editor component */
-/* This targets the textarea and pre within the .code-editor-container */
-.code-editor-container .code-editor,
-.code-editor-container .code-editor-pre {
-    height: 100%; /* Make sure editor content takes full height */
-    box-sizing: border-box; /* Include padding/border in element's total width/height */
-}
-
-/* Drawing tools container */
-.drawing-tools-container {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 100;
+.loading {
     display: flex;
-    gap: 8px;
-    background-color: #252526;
-    padding: 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border: 1px solid #333;
-}
-
-/* Editor controls container */
-.editor-controls {
-    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    background-color: #252526;
-    border-bottom: 1px solid #333;
-    flex-shrink: 0;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #f44336;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .resizer {
-        width: 100%;
-        height: 8px;
-        cursor: row-resize;
+    .project-header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
     }
+
+    .project-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .project-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .action-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .language-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.project-content {
+    animation: fadeIn 0.3s ease;
 }

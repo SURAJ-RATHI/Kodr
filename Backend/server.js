@@ -14,7 +14,8 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
-const fs = require('fs').promises;
+const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 const { connectDB, Project, File } = require('./src/db/db');
 const passport = require('passport');
@@ -111,61 +112,246 @@ const executeCode = (code, language) => {
         let command;
         let cleanupCommand = '';
 
-        switch (language) {
-            case 'javascript':
-                tempFilePath = path.join(__dirname, `temp_${Date.now()}.js`);
-                command = `node ${tempFilePath}`;
-                break;
-            case 'python':
-                tempFilePath = path.join(__dirname, `temp_${Date.now()}.py`);
-                command = `python ${tempFilePath}`;
-                break;
-            case 'cpp':
-                const cppFileName = `temp_${Date.now()}`;
-                tempFilePath = path.join(__dirname, `${cppFileName}.cpp`);
-                const compiledFilePath = path.join(__dirname, cppFileName);
-                // Compile and then run
-                command = `g++ ${tempFilePath} -o ${compiledFilePath} && ${compiledFilePath}`;
-                // Clean up source and compiled files
-                cleanupCommand = `del ${tempFilePath} && del ${compiledFilePath}`;
-                break;
-            case 'java':
-                const javaFileName = `Main_${Date.now()}`;
-                tempFilePath = path.join(__dirname, `${javaFileName}.java`);
-                // Assuming the class name inside is the same as file name (required by Java)
-                // Compile and then run. Need to cd into __dirname because java command is sensitive to file path.
-                command = `cd ${__dirname} && javac ${javaFileName}.java && java ${javaFileName}`;
-                // Clean up source and class files
-                cleanupCommand = `del ${tempFilePath} && del ${path.join(__dirname, `${javaFileName}.class`)}`;
-                break;
-            default:
-                return reject('Unsupported language');
-        }
-        
-        fs.writeFile(tempFilePath, code)
-            .then(() => {
-                exec(command, (error, stdout, stderr) => {
-                    // Clean up temporary files
-                    fs.unlink(tempFilePath).catch(console.error);
-                    if (cleanupCommand) {
-                        exec(cleanupCommand, (cleanupError, cleanupStdout, cleanupStderr) => {
-                            if (cleanupError) {
-                                console.error('Error during cleanup:', cleanupError);
-                            }
-                        });
-                    }
+        try {
+            // Create a temp directory if it doesn't exist
+            const tempDir = path.join(__dirname, 'temp');
+            if (!fs.existsSync(tempDir)) {
+                fs.mkdirSync(tempDir, { recursive: true });
+            }
 
-                    if (error) {
-                        // Prioritize stderr for error messages
-                        reject(stderr || error.message);
-                    } else {
-                        resolve(stdout);
-                    }
-                });
-            })
-            .catch(reject);
+            const timestamp = Date.now();
+            
+            switch (language) {
+                case 'javascript':
+                    tempFilePath = path.join(tempDir, `temp_${timestamp}.js`);
+                    command = `node "${tempFilePath}"`;
+                    break;
+                case 'python':
+                    tempFilePath = path.join(tempDir, `temp_${timestamp}.py`);
+                    command = `python "${tempFilePath}"`;
+                    break;
+                case 'cpp':
+                    const cppFileName = `temp_${timestamp}`;
+                    tempFilePath = path.join(tempDir, `${cppFileName}.cpp`);
+                    const compiledFilePath = path.join(tempDir, cppFileName);
+                    command = `g++ "${tempFilePath}" -o "${compiledFilePath}" && "${compiledFilePath}"`;
+                    cleanupCommand = `del "${tempFilePath}" && del "${compiledFilePath}.exe"`;
+                    break;
+                case 'java':
+                    tempFilePath = path.join(tempDir, 'Main.java');
+                    command = `cd "${tempDir}" && javac Main.java && java Main`;
+                    cleanupCommand = `del "${tempFilePath}" && del "${path.join(tempDir, 'Main.class')}"`;
+                    break;
+                default:
+                    return reject('Unsupported language');
+            }
+
+            console.log('Writing code to:', tempFilePath);
+            console.log('Executing command:', command);
+
+            // Write the code to a temporary file synchronously, always appending a newline
+            fs.writeFileSync(tempFilePath, code + '\n');
+            console.log('File content after write:', fs.readFileSync(tempFilePath, 'utf-8'));
+            console.log('Temp file path:', tempFilePath);
+
+            // Execute the code
+            exec(command, { timeout: 5000 }, (error, stdout, stderr) => {
+                // Log before deleting
+                console.log('About to delete temp file:', tempFilePath);
+                if (fs.existsSync(tempFilePath)) {
+                    console.log('Temp file still exists, content before delete:', fs.readFileSync(tempFilePath, 'utf-8'));
+                    fs.unlinkSync(tempFilePath);
+                }
+                
+                if (cleanupCommand) {
+                    console.log('Running cleanup command:', cleanupCommand);
+                    exec(cleanupCommand, (cleanupError) => {
+                        if (cleanupError) {
+                            console.error('Error during cleanup:', cleanupError);
+                        }
+                    });
+                }
+
+                if (error) {
+                    console.error('Execution error:', error);
+                    console.error('stderr:', stderr);
+                    // Return both stdout and stderr for better error reporting
+                    reject({
+                        error: true,
+                        output: stderr || error.message,
+                        stdout: stdout,
+                        details: error
+                    });
+                } else {
+                    console.log('Execution successful, output:', stdout);
+                    resolve({
+                        error: false,
+                        output: stdout,
+                        stderr: stderr
+                    });
+                }
+            });
+        } catch (err) {
+            console.error('Error in executeCode:', err);
+            reject({
+                error: true,
+                output: `Error: ${err.message}`,
+                details: err
+            });
+        }
     });
 };
+
+// Function to get boilerplate code based on language
+function getBoilerplateCode(language) {
+    const boilerplates = {
+        javascript: `// JavaScript Boilerplate
+// Author: Your Name
+// Date: ${new Date().toLocaleDateString()}
+
+// Main function
+function main() {
+    console.log("Hello, World!");
+    
+    // Example function
+    function exampleFunction() {
+        return "This is an example function";
+    }
+    
+    // Example class
+    class ExampleClass {
+        constructor() {
+            this.value = 0;
+        }
+        
+        increment() {
+            this.value++;
+            return this.value;
+        }
+    }
+    
+    // Call example function
+    console.log(exampleFunction());
+    
+    // Use example class
+    const example = new ExampleClass();
+    console.log(example.increment());
+}
+
+// Run the main function
+main();`,
+        java: `// Java Boilerplate
+// Author: Your Name
+// Date: ${new Date().toLocaleDateString()}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+        
+        // Example method call
+        String result = exampleMethod();
+        System.out.println(result);
+        
+        // Example class usage
+        ExampleClass example = new ExampleClass();
+        System.out.println(example.increment());
+    }
+    
+    // Example method
+    public static String exampleMethod() {
+        return "This is an example method";
+    }
+}
+
+// Example class
+class ExampleClass {
+    private int value;
+    
+    public ExampleClass() {
+        this.value = 0;
+    }
+    
+    public int increment() {
+        value++;
+        return value;
+    }
+}`,
+        python: `#!/usr/bin/env python3
+# Python Boilerplate
+# Author: Your Name
+# Date: ${new Date().toLocaleDateString()}
+
+def example_function():
+    """Example function that returns a string."""
+    return "This is an example function"
+
+class ExampleClass:
+    """Example class with basic functionality."""
+    
+    def __init__(self):
+        self.value = 0
+    
+    def increment(self):
+        """Increment the value and return it."""
+        self.value += 1
+        return self.value
+
+def main():
+    print("Hello, World!")
+    
+    # Call example function
+    result = example_function()
+    print(result)
+    
+    # Use example class
+    example = ExampleClass()
+    print(example.increment())
+
+if __name__ == "__main__":
+    main()`,
+        cpp: `// C++ Boilerplate
+// Author: Your Name
+// Date: ${new Date().toLocaleDateString()}
+
+#include <iostream>
+#include <string>
+
+// Example function
+std::string exampleFunction() {
+    return "This is an example function";
+}
+
+// Example class
+class ExampleClass {
+private:
+    int value;
+
+public:
+    ExampleClass() : value(0) {}
+    
+    int increment() {
+        value++;
+        return value;
+    }
+};
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    
+    // Call example function
+    std::string result = exampleFunction();
+    std::cout << result << std::endl;
+    
+    // Use example class
+    ExampleClass example;
+    std::cout << example.increment() << std::endl;
+    
+    return 0;
+}`
+    };
+    
+    return boilerplates[language] || '// Start coding here...';
+}
 
 // API Routes (Updated - Note: Project and File routes still need protection)
 // We will protect Project and File routes in a later step
@@ -190,14 +376,14 @@ app.post('/api/projects', async (req, res) => {
             return res.status(401).json({ error: 'Authentication required' });
         }
 
-        const { name } = req.body;
+        const { name, language = 'javascript' } = req.body;
         const project = new Project({
             name,
             userId: req.user._id,
             files: [{
-                name: 'main.js',
-                content: '// Start coding here...',
-                language: 'javascript'
+                name: `main.${language}`,
+                content: getBoilerplateCode(language),
+                language: language
             }]
         });
         await project.save();
@@ -294,12 +480,30 @@ app.delete('/api/files/:id', async (req, res) => {
 
 // Add this new route for running code
 app.post('/api/run', async (req, res) => {
-    const { content, language } = req.body;
+    let { content, language } = req.body;
+    
+    if (!content || !language) {
+        return res.status(400).json({ 
+            error: true, 
+            output: 'Missing required fields: content and language' 
+        });
+    }
+
     try {
-        const output = await executeCode(content, language);
-        res.json({ output });
+        if (language === 'java') {
+            console.log('Java code received:', content);
+            // If code is empty or does not contain System.out.println, add a default print
+            if (!content || !content.includes('System.out.println')) {
+                content = `public class Main { public static void main(String[] args) { System.out.println("Hello from backend!"); } }`;
+            }
+            // Force the class name to 'Main' for all Java code
+            content = content.replace(/public\s+class\s+\w+/g, 'public class Main');
+        }
+        const result = await executeCode(content, language);
+        res.json(result);
     } catch (error) {
-        res.status(500).json({ output: `Execution Error: ${error}` });
+        console.error('Error in /api/run:', error);
+        res.status(500).json(error);
     }
 });
 
@@ -322,6 +526,13 @@ app.get('/auth/logout', (req, res) => {
         if (err) { return next(err); }
         res.redirect(process.env.FRONTEND_URL || 'http://localhost:5173');
     });
+});
+
+// Add boilerplate endpoint
+app.post('/api/boilerplate', (req, res) => {
+    const { language } = req.body;
+    const boilerplate = getBoilerplateCode(language);
+    res.json({ boilerplate });
 });
 
 // Connect to MongoDB and start the server

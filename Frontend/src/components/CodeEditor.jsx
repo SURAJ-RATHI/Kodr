@@ -1,43 +1,33 @@
 import React from 'react';
 import Editor from 'react-simple-code-editor';
-import Prism, { highlight } from 'prismjs';
-
-import 'prismjs/themes/prism.css';
+import { highlight, languages } from 'prismjs';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-cpp';
+import 'prismjs/themes/prism-tomorrow.css';
 import './CodeEditor.css';
 
-const CodeEditor = ({ value, onValueChange, language }) => {
-    const highlightCode = (code) => {
-        // Use Prism.languages directly
-        const languageGrammar = Prism.languages[language] || Prism.languages.javascript;
-        return highlight(code, languageGrammar, language);
-    };
-
-    // Calculate line numbers directly from the value prop
-    const lineNumbers = value.split('\n').map((_, i) => i + 1);
-
-    return (
-        <div className="code-editor-container">
-            <div className="line-numbers">
-                {lineNumbers.map(num => (
-                    <div key={num} className="line-number">{num}</div>
-                ))}
-            </div>
-            <Editor
-                value={value}
-                onValueChange={onValueChange}
-                highlight={highlightCode}
-                padding={10}
-                style={{
-                    fontFamily: '"Fira Code", monospace',
-                    fontSize: 14,
-                    lineHeight: 1.5,
-                }}
-                textareaId="code-editor"
-                className="code-editor"
-                preClassName="code-editor-pre"
-            />
-        </div>
-    );
+const CodeEditor = ({ value, language = 'javascript', onValueChange }) => {
+  return (
+    <div className="code-editor-container">
+      <div className="editor-content">
+        <Editor
+          value={value}
+          onValueChange={onValueChange}
+          highlight={code => highlight(code, languages[language], language)}
+          padding={10}
+          style={{
+            fontFamily: '"Fira Code", monospace',
+            fontSize: 14,
+            backgroundColor: '#1e1e1e',
+            minHeight: '300px',
+            borderRadius: '4px'
+          }}
+        />
+      </div>
+    </div>
+  );
 };
 
-export default CodeEditor;  
+export default CodeEditor; 

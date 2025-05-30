@@ -1,81 +1,76 @@
 .code-editor-container {
-    /* flex: 0 0 50%; Initial flex-basis for width - Handled by Project.jsx */
-    min-width: 300px;
-    max-width: 80%; /* Max width handled by Project.jsx flex basis */
-    height: 100%; /* Ensure it takes full height of parent flex item */
-    position: relative; /* Keep relative for positioning context if needed */
-    overflow-y: auto; /* Enable vertical scrolling on the container */
-    overflow-x: hidden; /* Hide horizontal overflow on the container */
-    display: flex; /* Use flexbox for internal layout */
-    flex-direction: row; /* Arrange line numbers and editor side-by-side */
-    /* Removed border-right as resizer acts as separator */
-    /* Remove padding from here - apply to children if needed */
-    padding: 0; /* Reset padding on the container */
-    box-sizing: border-box; /* Keep box-sizing */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.line-numbers {
-    /* Removed position: absolute; */
-    /* left: 0;
-    top: 0;
-    bottom: 0; */
-    width: 40px;
-    background-color: #1e1e1e;
-    border-right: 1px solid #333;
-    color: #858585;
-    text-align: right;
-    padding: 10px 5px; /* Keep padding for internal alignment */
-    user-select: none;
-    z-index: 1; /* Keep z-index */
-    flex-shrink: 0; /* Prevent shrinking */
-    height: 100%; /* Take full height of flex container */
-    overflow-y: hidden; /* Hide vertical overflow in line numbers themselves */
+.editor-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3d3d3d;
 }
 
-.line-number {
-    font-family: 'Fira Code', monospace;
-    font-size: 14px;
-    line-height: 1.5;
+.language-selector {
+  padding: 6px 12px;
+  background-color: #3d3d3d;
+  color: #ffffff;
+  border: 1px solid #4d4d4d;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
 }
 
-/* Code editor (this targets the div wrapper around the textarea and pre) */
-.code-editor {
-    /* Removed position: absolute; */
-    /* top: 0;
-    left: 40px;
-    right: 0;
-    bottom: 0; */
-    font-family: 'Fira Code', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    background-color: #1e1e1e;
-    color: #ffffff;
-    overflow-y: hidden; /* Let container handle main scrolling */
-    flex-grow: 1; /* Allow editor to grow and fill remaining space */
-    /* Add padding here to create space around the code content */
-    padding: 10px; /* Padding around the code text */
-    box-sizing: border-box; /* Include padding in element's total width/height */
+.language-selector:hover {
+  border-color: #5d5d5d;
 }
 
-.code-editor-pre {
-    margin: 0;
-    padding: 0; /* Keep padding: 0 here */
-    background-color: transparent !important;
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-x: hidden;
+.language-selector:focus {
+  border-color: #007acc;
 }
 
-/* Syntax highlighting colors */
+.editor-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Custom scrollbar styles */
+.editor-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.editor-content::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.editor-content::-webkit-scrollbar-thumb {
+  background: #4d4d4d;
+  border-radius: 4px;
+}
+
+.editor-content::-webkit-scrollbar-thumb:hover {
+  background: #5d5d5d;
+}
+
+/* Syntax highlighting overrides */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-    color: #6a9955;
+  color: #6a9955;
 }
 
 .token.punctuation {
-    color: #ffffff;
+  color: #d4d4d4;
 }
 
 .token.property,
@@ -84,7 +79,7 @@
 .token.number,
 .token.constant,
 .token.symbol {
-    color: #b5cea8;
+  color: #b5cea8;
 }
 
 .token.selector,
@@ -92,7 +87,7 @@
 .token.string,
 .token.char,
 .token.builtin {
-    color: #ce9178;
+  color: #ce9178;
 }
 
 .token.operator,
@@ -100,136 +95,30 @@
 .token.url,
 .language-css .token.string,
 .style .token.string {
-    color: #ffffff;
+  color: #d4d4d4;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-    color: #569cd6;
+  color: #569cd6;
 }
 
 .token.function {
-    color: #dcdcaa;
+  color: #dcdcaa;
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-    color: #d16969;
+  color: #d16969;
 }
 
 .token.important,
 .token.bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .token.italic {
-    font-style: italic;
-}
-
-.token.entity {
-    cursor: help;
-}
-
-/* Adjustments for the actual react-simple-code-editor Editor component */
-/* This targets the textarea within the .code-editor element */
-.code-editor textarea {
-    /* Removed z-index, position, display, width, height, top, left - let flexbox handle layout */
-    /* z-index: 2; */
-    /* position: absolute; */
-    /* display: block; */
-    /* width: 100%; */
-    /* height: 100%; */
-    /* top: 0; */
-    /* left: 0; */
-    background-color: transparent; /* Ensure transparency */
-    color: inherit; /* Inherit text color */
-    resize: none; /* Disable textarea resize handle */
-    overflow: hidden; /* Hide textarea default scrollbar */
-    /* Ensure it fills its flex parent (.code-editor) */
-    width: 100%;
-    height: 100%;
-    display: block; /* Ensure block behavior */
-}
-
-/* Scrollbar styling for code editor container */
-.code-editor-container::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.code-editor-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-.code-editor-container::-webkit-scrollbar-thumb {
-    background: #424242;
-    border-radius: 4px;
-}
-
-.code-editor-container::-webkit-scrollbar-thumb:hover {
-    background: #4f4f4f;
-}
-
-/* Selection Styles */
-.code-editor-container textarea::selection {
-    background-color: var(--vscode-editor-selectionBackground);
-}
-
-/* Focus Styles */
-.code-editor-container textarea:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* Responsive adjustments for code editor container */
-@media (max-width: 768px) {
-  .code-editor-container {
-    flex-direction: column; /* Stack line numbers and editor vertically on smaller screens */
-    /* Height is already handled by Project.jsx flex basis */
-    max-width: none; /* Remove max width constraint */
-    min-width: 0; /* Allow it to shrink */
-    overflow-y: auto; /* Vertical scrolling handled by container */
-    overflow-x: hidden;
-    padding: 0; /* Reset padding */
-  }
-
-  .line-numbers {
-    position: relative; /* Change to relative for stacked layout */
-    width: 100%; /* Full width on smaller screens */
-    height: auto; /* Auto height */
-    text-align: left;
-    border-right: none;
-    border-bottom: 1px solid #333;
-    padding: 5px 10px;
-     overflow-y: hidden; /* Hide vertical overflow in line numbers themselves */
-  }
-
-  .code-editor {
-    position: relative; /* Change to relative for stacked layout */
-    padding: 10px; /* Uniform padding on smaller screens */
-    height: auto; /* Auto height */
-    left: 0; /* Reset left offset */
-    right: 0; /* Reset right offset */
-    top: 0; /* Reset top offset */
-    bottom: 0; /* Reset bottom offset */
-     overflow-y: auto; /* Allow vertical scrolling within the editor on small screens if needed */
-  }
-
-  .code-editor-container .code-editor,
-  .code-editor-container .code-editor-pre {
-     /* Removed height 100% and padding here - now on .code-editor */
-     /* height: auto; */
-     /* padding: 0; */
-  }
-
-  /* Adjust textarea for small screens */
-  .code-editor-container textarea {
-    width: 100%;
-    height: 100%; /* Let it take full height of its container */
-    display: block;
-  }
-   /* Scrollbar styling for code editor container on smaller screens - potentially vertical on parent */
-  /* If needed, add specific styles for horizontal scrollbar here */
+  font-style: italic;
 } 

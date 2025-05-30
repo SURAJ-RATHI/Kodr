@@ -45,14 +45,19 @@ const Home = () => {
 
     const handleCreateProject = async (e) => {
         e.preventDefault();
+        if (!newProjectName.trim()) {
+            alert('Please enter a project name');
+            return;
+        }
         try {
             if (isGuestMode) {
                 // Create a temporary project for guest mode
                 const tempProject = {
                     _id: `guest_${Date.now()}`,
-                    name: newProjectName || 'Untitled Project',
+                    name: newProjectName.trim(),
                     isGuest: true
                 };
+                localStorage.setItem('projectName', newProjectName.trim());
                 setProjects([...projects, tempProject]);
                 setShowNewProjectModal(false);
                 setNewProjectName('');
@@ -65,7 +70,7 @@ const Home = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name: newProjectName }),
+                body: JSON.stringify({ name: newProjectName.trim() }),
             });
             if (!response.ok) throw new Error('Failed to create project');
             const project = await response.json();

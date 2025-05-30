@@ -12,6 +12,14 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.nav-brand:hover {
+    opacity: 0.8;
 }
 
 .brand-icon {
@@ -23,6 +31,7 @@
     color: var(--vscode-blue);
     font-size: 1.2rem;
     font-weight: 600;
+    margin: 0;
 }
 
 .nav-links {

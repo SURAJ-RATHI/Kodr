@@ -6,14 +6,14 @@ module.exports.create = async (req, res) => {
     try {
         const { name } = req.body;
 
-        if (!name) {
+        if (!name || !name.trim()) {
             return res.status(400).json({
-                message: 'Name is required'
+                message: 'Project name is required and cannot be empty'
             });
         }
 
         const project = await projectModel.create({
-            name,
+            name: name.trim(),
             code: "// Start coding here...",
             files: [
                 {
